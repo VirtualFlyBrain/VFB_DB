@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Fetching flybase DB from ftp://ftp.flybase.net/releases/current/psql/"
-cd /disk/data/VFB/scripts/robbie/flybase/
+cd /current/
 rm *.gz.*
 wget ftp://ftp.flybase.net/releases/current/psql/*.gz.*
 createdb -E UTF-8 -h localhost -U nmilyav1 flybase_new
