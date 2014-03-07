@@ -1,4 +1,4 @@
-VFB local Database management
+VFB Local Database Management
 ======
 
 To load the latest Flybase version:
