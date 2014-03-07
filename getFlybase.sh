@@ -10,6 +10,7 @@ wget ftp://ftp.flybase.net/releases/current/psql/*.gz.*
 createdb -E UTF-8 -h localhost -U nmilyav1 flybase_new
 cat *.gz* | gunzip | psql -h localhost -U nmilyav1 flybase_new
 vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
+psql -h localhost -U nmilyav1 nmilyav1 -c "GRANT SELECT ON DATABASE 'flybase_new' TO flybase"
 dropdb 'flybase_old'
 psql -h localhost -U nmilyav1 nmilyav1 -c "ALTER DATABASE 'flybase' RENAME TO flybase_old"
 psql -h localhost -U nmilyav1 nmilyav1 -c "ALTER DATABASE 'flybase_new' RENAME TO flybase"
