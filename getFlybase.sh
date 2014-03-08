@@ -3,6 +3,7 @@
 # localhost:5432:flybase:nmilyav1:password
 # localhost:5432:vfb:nmilyav1:password
 # Obviously replacing password with the real password.
+# Note: This will take hours! 
 echo "Fetching flybase DB from ftp://ftp.flybase.net/releases/current/psql/"
 cd /current/
 rm *.gz.*
@@ -11,10 +12,8 @@ createdb -E UTF-8 -h localhost -U nmilyav1 flybase_new
 cat *.gz* | gunzip | psql -h localhost -U nmilyav1 flybase_new
 vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
 psql -h localhost -U nmilyav1 flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
-dropdb -h localhost -U nmilyav1 'flybase_old'
-createdb -E UTF-8 -h localhost -U nmilyav1 flybase_old
-/usr/pgsql-9.3/bin/pg_dump -h localhost -U nmilyav1 flybase > flybase_old.dump
-
-psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE 'flybase' RENAME TO flybase_old"
-psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE 'flybase_new' RENAME TO flybase"
+rm ../old/flybase_old.dump
+/usr/pgsql-9.3/bin/pg_dump -h localhost -U nmilyav1 flybase > ../old/flybase_old.dump
+/usr/pgsql-9.3/bin/pg_dump -h localhost -U nmilyav1 flybase_new > flybase.dump
+psql -h localhost -U nmilyav1 flybase < flybase.dump
 psql -h localhost -U flybase flybase < TableQueries/chado_views_for_vfb.sql
