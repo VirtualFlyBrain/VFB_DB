@@ -12,6 +12,6 @@ cat *.gz* | gunzip | psql -h localhost -U nmilyav1 flybase_new
 vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
 psql -h localhost -U nmilyav1 flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
 dropdb -h localhost -U nmilyav1 'flybase_old'
-psql -h localhost -U nmilyav1 flybase -c "ALTER DATABASE 'flybase' RENAME TO flybase_old"
-psql -h localhost -U nmilyav1 flybase_new -c "ALTER DATABASE 'flybase_new' RENAME TO flybase"
+psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE 'flybase' RENAME TO flybase_old"
+psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE 'flybase_new' RENAME TO flybase"
 psql -h localhost -U flybase flybase < TableQueries/chado_views_for_vfb.sql
