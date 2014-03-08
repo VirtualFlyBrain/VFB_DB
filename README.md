@@ -3,6 +3,8 @@ VFB Local Database Management
 
 To load the latest Flybase version:
 
+Note: This should only be run on main server them replicated to others
+
 Ensure you have created a ~/.pgpass file containing:
 ```
 localhost:5432:*:nmilyav1:password
