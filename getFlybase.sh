@@ -13,7 +13,12 @@ cat *.gz* | gunzip | psql -h localhost -U nmilyav1 flybase_new
 vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
 psql -h localhost -U nmilyav1 flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
 rm ../old/flybase_old.dump
+rm ../old/revision
 /usr/pgsql-9.3/bin/pg_dump -h localhost -U nmilyav1 flybase > ../old/flybase_old.dump
+mv revision ../old/
+rm flybase.dump
+ls *.gz.00 | rev | cut -c 11- | rev > revision
 /usr/pgsql-9.3/bin/pg_dump -h localhost -U nmilyav1 flybase_new > flybase.dump
 psql -h localhost -U nmilyav1 flybase < flybase.dump
 psql -h localhost -U flybase flybase < TableQueries/chado_views_for_vfb.sql
+dropdb -h localhost -U nmilyav1 'flybase_new'
