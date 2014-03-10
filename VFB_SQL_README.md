@@ -2,11 +2,12 @@ This DB drives generation of links and retrieval of images.  It is
 used to populate third party beans as follows:
 
 ```sql
-    SELECT l.vfbid, f.fbid, l.remoteid, l.source_name, l.thumb_name, l.local_stack_url, s.base_url, s.thumb_local_base, s.stack_local_base, s. descr, l.display_name,
+    SELECT l.vfbid, f.fbid, l.remoteid, l.source_name, l.thumb_name, l.local_stack_url, 
+    s.base_url, s.thumb_local_base, s.stack_local_base, s. descr, l.display_name,
     f.stack_type, f.complete_expression_pattern
     FROM third_party_site_lookup l
     JOIN third_party_site_source s ON (l.source_name = s.name)
-    LEFT OUTER JOIN third_party_flybase_lookup f on (f.vfbid=l.vfbid);
+    LEFT OUTER JOIN third_party_flybase_lookup f ON (f.vfbid=l.vfbid);
 ```
 
 * l.vfbid = shortFormID of owl individual depicted in the image.
