@@ -27,4 +27,4 @@ psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(pid) FROM
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase RENAME TO flybase_old"
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase_new RENAME TO flybase"
 vacuumdb -f -z -v flybase -U nmilyav1 -h localhost
-psql -h localhost -U flybase flybase < TableQueries/chado_views_for_vfb.sql
+psql -h localhost -U flybase flybase < ../TableQueries/chado_views_for_vfb.sql
