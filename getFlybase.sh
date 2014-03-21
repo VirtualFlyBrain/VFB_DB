@@ -1,7 +1,7 @@
 #!/bin/bash
 # Ensure you have created a ~/.pgpass file containing:
-# localhost:5432:flybase:nmilyav1:password
-# localhost:5432:vfb:nmilyav1:password
+# localhost:5432:*:flybase:password
+# localhost:5432:*:nmilyav1:password
 # Obviously replacing password with the real password.
 # Note: This will take hours! 
 # Note: You may need to change pgsql revision for pg_dump commands if server is updated or not run on main server.
