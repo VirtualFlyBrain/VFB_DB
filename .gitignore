@@ -1,2 +1,4 @@
 FB*.sql.gz.*
 *.dump
+*.out
+
