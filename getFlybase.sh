@@ -7,6 +7,7 @@
 # Note: You may need to change pgsql revision for pg_dump commands if server is updated or not run on main server.
 echo "Fetching flybase DB from ftp://ftp.flybase.net/releases/current/psql/"
 cd current
+echo `pwd`
 #removing 90 day old downloads. Note: file date is date released by FB not date copied.
 find current/ -name "*.gz.*" -mtime +90 | xargs rm
 wget -c ftp://ftp.flybase.net/releases/current/psql/*.gz.*
