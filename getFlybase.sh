@@ -6,7 +6,7 @@
 # Note: This will take hours! 
 # Note: You may need to change pgsql revision for pg_dump commands if server is updated or not run on main server.
 echo "Fetching flybase DB from ftp://ftp.flybase.net/releases/current/psql/"
-cd /current/
+cd current
 rm *.gz.*
 wget ftp://ftp.flybase.net/releases/current/psql/*.gz.*
 createdb -E UTF-8 -h localhost -U nmilyav1 flybase_new
