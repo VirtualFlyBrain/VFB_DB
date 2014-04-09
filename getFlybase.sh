@@ -7,13 +7,23 @@
 # Note: You may need to change pgsql revision for pg_dump commands if server is updated or not run on main server.
 echo "Fetching flybase DB from ftp://ftp.flybase.net/releases/current/psql/"
 cd current
+echo `date`
 echo `pwd`
 #removing 90 day old downloads. Note: file date is date released by FB not date copied.
 find . -name "*.gz.*" -mtime +90 | xargs rm
 wget -c ftp://ftp.flybase.net/releases/current/psql/*.gz.*
-dropdb -h localhost -U nmilyav1 'flybase_new' # just incase; should fail.
+# clean flybase_new: just incase - should fail.
+if [ `tail -n 1 /etc/hosts | rev | cut -c -6 | rev` == 'blanik' ]
+then
+  psql -h localhost -U nmilyav1 flybase_new -c "SELECT usename, procpid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname='flybase_new';"
+else
+  psql -h localhost -U nmilyav1 flybase_new -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase_new';"
+fi
+dropdb -h localhost -U nmilyav1 'flybase_new' 
 createdb -E UTF-8 -h localhost -U nmilyav1 flybase_new
-cat *.gz* | gunzip | psql -h localhost -U nmilyav1 flybase_new
+cat *.gz* | unpigz | psql -h localhost -U nmilyav1 flybase_new
 vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
 psql -h localhost -U nmilyav1 flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
 
@@ -26,11 +36,18 @@ mv revision ../old/
 echo "FB DB updating..." > revision
 rm flybase.dump
 
-psql -h localhost -U nmilyav1 flybase -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
-psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase';"
+if [ `tail -n 1 /etc/hosts | rev | cut -c -6 | rev` == 'blanik' ]
+then
+  psql -h localhost -U nmilyav1 flybase -c "SELECT usename, procpid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname='flybase';"
+else
+  psql -h localhost -U nmilyav1 flybase -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase';"
+fi
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase RENAME TO flybase_old"
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase_new RENAME TO flybase"
 vacuumdb -f -z -v flybase -U nmilyav1 -h localhost
 psql -h localhost -U flybase flybase < ../TableQueries/chado_views_for_vfb.sql
 
 ls *.gz.00 | rev | cut -c 11- | rev > revision
+echo `date`
