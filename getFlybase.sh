@@ -7,13 +7,14 @@
 # Note: You may need to change pgsql revision for pg_dump commands if server is updated or not run on main server.
 echo "Fetching flybase DB from ftp://ftp.flybase.net/releases/current/psql/"
 cd current
+echo `date`
 echo `pwd`
 #removing 90 day old downloads. Note: file date is date released by FB not date copied.
 find . -name "*.gz.*" -mtime +90 | xargs rm
 wget -c ftp://ftp.flybase.net/releases/current/psql/*.gz.*
 dropdb -h localhost -U nmilyav1 'flybase_new' # just incase; should fail.
 createdb -E UTF-8 -h localhost -U nmilyav1 flybase_new
-cat *.gz* | gunzip | psql -h localhost -U nmilyav1 flybase_new
+cat *.gz* | unpigz | psql -h localhost -U nmilyav1 flybase_new
 vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
 psql -h localhost -U nmilyav1 flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
 
@@ -34,3 +35,4 @@ vacuumdb -f -z -v flybase -U nmilyav1 -h localhost
 psql -h localhost -U flybase flybase < ../TableQueries/chado_views_for_vfb.sql
 
 ls *.gz.00 | rev | cut -c 11- | rev > revision
+echo `date`
