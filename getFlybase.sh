@@ -27,8 +27,14 @@ mv revision ../old/
 echo "FB DB updating..." > revision
 rm flybase.dump
 
-psql -h localhost -U nmilyav1 flybase -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
-psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase';"
+if [ `tail -n 1 /etc/hosts | rev | cut -c -6 | rev` == 'blanik' ]
+then
+  psql -h localhost -U nmilyav1 flybase -c "SELECT usename, procpid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname='flybase';"
+else
+  psql -h localhost -U nmilyav1 flybase -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase';"
+fi
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase RENAME TO flybase_old"
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase_new RENAME TO flybase"
 vacuumdb -f -z -v flybase -U nmilyav1 -h localhost
