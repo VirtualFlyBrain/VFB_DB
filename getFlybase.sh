@@ -12,7 +12,16 @@ echo `pwd`
 #removing 90 day old downloads. Note: file date is date released by FB not date copied.
 find . -name "*.gz.*" -mtime +90 | xargs rm
 wget -c ftp://ftp.flybase.net/releases/current/psql/*.gz.*
-dropdb -h localhost -U nmilyav1 'flybase_new' # just incase; should fail.
+# clean flybase_new: just incase - should fail.
+if [ `tail -n 1 /etc/hosts | rev | cut -c -6 | rev` == 'blanik' ]
+then
+  psql -h localhost -U nmilyav1 flybase_new -c "SELECT usename, procpid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname='flybase_new';"
+else
+  psql -h localhost -U nmilyav1 flybase_new -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
+  psql -h localhost -U nmilyav1 postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase_new';"
+fi
+dropdb -h localhost -U nmilyav1 'flybase_new' 
 createdb -E UTF-8 -h localhost -U nmilyav1 flybase_new
 cat *.gz* | unpigz | psql -h localhost -U nmilyav1 flybase_new
 vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
