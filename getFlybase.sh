@@ -31,7 +31,21 @@ dropdb -h localhost -U nmilyav1 'flybase_old'
 
 rm ../old/flybase_old.dump
 rm ../old/revision
-/usr/pgsql-9.3/bin/pg_dump -h localhost -U nmilyav1 flybase > ../old/flybase_old.dump
+if [ `tail -n 1 /etc/hosts | rev | cut -c -6 | rev` == 'blanik' ]
+then
+  /usr/pgsql-9.2/bin/pg_dump -h localhost -U nmilyav1 flybase > ../old/flybase_old.dump
+else
+  /usr/pgsql-9.3/bin/pg_dump -h localhost -U nmilyav1 flybase > ../old/flybase_old.dump
+fi
+echo `date`
+echo 'Stating vacuum...'
+vacuumdb -f -z -v flybase_new -U nmilyav1 -h localhost
+echo 'Finished vacuum.'
+echo `date`
+echo 'Staring creating custom tables (long process with no feedback) ...'
+psql -h localhost -U flybase flybase_new < ../TableQueries/chado_views_for_vfb.sql
+echo 'Finished creating views.'
+echo `date`
 mv revision ../old/
 echo "FB DB updating..." > revision
 rm flybase.dump
@@ -47,14 +61,12 @@ fi
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase RENAME TO flybase_old"
 psql -h localhost -U nmilyav1 postgres -c "ALTER DATABASE flybase_new RENAME TO flybase"
 echo 'DB swapped'
+psql -h localhost -U nmilyav1 flybase -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
 echo `date`
 echo 'Stating vacuum...'
 vacuumdb -f -z -v flybase -U nmilyav1 -h localhost
 echo 'Finished vacuum.'
 echo `date`
-echo 'Staring creating views (long process with no feedback) ...'
-psql -h localhost -U flybase flybase < ../TableQueries/chado_views_for_vfb.sql
-echo 'Finished creating views.'
 echo New DB online.
 ls *.gz.00 | rev | cut -c 11- | rev > revision
 echo `date`
