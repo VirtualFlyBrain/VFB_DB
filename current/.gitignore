@@ -1,4 +1,5 @@
 FB*.sql.gz.*
 *.dump
 revision
+*.sql
 

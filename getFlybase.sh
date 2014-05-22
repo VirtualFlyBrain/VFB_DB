@@ -53,7 +53,7 @@ vacuumdb -f -z -v flybase -U nmilyav1 -h localhost
 echo 'Finished vacuum.'
 echo `date`
 echo 'Staring creating views (long process with no feedback) ...'
-psql -h localhost -U nmilyav1 flybase < ../TableQueries/chado_views_for_vfb.sql
+psql -h localhost -U flybase flybase < ../TableQueries/chado_views_for_vfb.sql
 echo 'Finished creating views.'
 echo New DB online.
 ls *.gz.00 | rev | cut -c 11- | rev > revision
