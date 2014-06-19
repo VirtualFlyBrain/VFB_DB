@@ -14,7 +14,7 @@ find . -name "*.gz.*" -mtime +90 | xargs rm
 wget -c ftp://ftp.flybase.net/releases/current/psql/*.gz.*
 
 if `ls *.gz.* | wc -l` > 0
-do
+then
   # clean flybase_new: just incase - should fail.
   
   psql -h localhost -U jenkins flybase_new -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
@@ -64,5 +64,5 @@ do
   echo `date`
   echo New DB online.
   ls *.gz.00 | rev | cut -c 11- | rev > revision
-done
+fi
 echo `date`
