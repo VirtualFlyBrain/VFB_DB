@@ -15,4 +15,4 @@ Then run getFlybase.sh
 
 Note: as a very long job recomended to run as: ```nohup nice nice krenew -k /disk/data/Home/$USER/mylongcred -t ./getFlybase.sh &```
 
-Note: This will take hours! 
+Note: This will take hours! (8.5 on karenin)
