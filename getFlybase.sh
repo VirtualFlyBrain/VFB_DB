@@ -13,7 +13,7 @@ echo `pwd`
 find . -name "*.gz.*" -mtime +90 | xargs rm
 wget -c ftp://ftp.flybase.net/releases/current/psql/*.gz.*
 
-if [ `ls *.gz.00 | rev | cut -c 11- | rev` -ne `cat revision` ]
+if [ `ls *.gz.00 | rev | cut -c 11- | rev` != `cat revision` ]
 then
 
   # clean flybase_new: just incase - should fail.
