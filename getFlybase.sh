@@ -10,7 +10,7 @@ cd current
 echo `date`
 echo `pwd`
 #removing 90 day old downloads. Note: file date is date released by FB not date copied.
-find . -name "*.gz.*" -mtime +90 | xargs rm
+find . -name "*.gz.*" -mtime +30 | xargs rm
 wget -c ftp://ftp.flybase.net/releases/current/psql/*.gz.*
 
 if [ `ls *.gz.00 | rev | cut -c 11- | rev` != `cat revision` ]
