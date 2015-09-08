@@ -23,7 +23,7 @@ then
 
   dropdb -h localhost -U jenkins 'flybase_new'
   createdb -E UTF-8 -h localhost -U jenkins flybase_new
-  cat *.gz* | unpigz | psql -h localhost -U jenkins flybase_new
+  cat FB*.gz.00 FB*.gz.01 FB*.gz.02 FB*.gz.03 | gunzip | psql -h localhost -U jenkins flybase_new
   vacuumdb -f -z -v flybase_new -U jenkins -h localhost
   psql -h localhost -U jenkins flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
 
