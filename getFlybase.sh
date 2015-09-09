@@ -18,14 +18,14 @@ then
 
   # clean flybase_new: just incase - should fail.
 
-  psql -h localhost -U jenkins flybase_new -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
-  psql -h localhost -U jenkins postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase_new';"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins flybase_new -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase_new';"
 
   dropdb -h localhost -U jenkins 'flybase_new'
   createdb -E UTF-8 -h localhost -U jenkins flybase_new
-  cat *.gz* | unpigz | psql -h localhost -U jenkins flybase_new 2>&1
+  cat *.gz* | unpigz | /usr/pgsql-9.3/bin/psql -h localhost -U jenkins flybase_new 2>&1
   vacuumdb -f -z -v flybase_new -U jenkins -h localhost
-  psql -h localhost -U jenkins flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
 
   dropdb -h localhost -U jenkins 'flybase_old'
 
@@ -43,9 +43,9 @@ then
   echo 'Finished vacuum.'
   echo `date`
   echo 'Staring creating custom tables (long process with no feedback) ...'
-  psql -h localhost -U jenkins flybase_new < ../TableQueries/chado_views_for_vfb.sql
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins flybase_new < ../TableQueries/chado_views_for_vfb.sql
   echo 'Finished creating views.'
-  psql -h localhost -U jenkins flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins flybase_new -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO flybase"
   echo `date`
   echo 'Stating vacuum...'
   vacuumdb -f -z -v flybase_new -U jenkins -h localhost
@@ -55,11 +55,11 @@ then
   echo "FB DB updating..." > revision
   rm flybase.dump
 
-  psql -h localhost -U jenkins flybase -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
-  psql -h localhost -U jenkins postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase';"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins flybase -c "SELECT usename, pid FROM pg_stat_activity WHERE datname = current_database();"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='flybase';"
 
-  psql -h localhost -U jenkins postgres -c "ALTER DATABASE flybase RENAME TO flybase_old"
-  psql -h localhost -U jenkins postgres -c "ALTER DATABASE flybase_new RENAME TO flybase"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins postgres -c "ALTER DATABASE flybase RENAME TO flybase_old"
+  /usr/pgsql-9.3/bin/psql -h localhost -U jenkins postgres -c "ALTER DATABASE flybase_new RENAME TO flybase"
   echo 'DB swapped'
 
   echo `date`
