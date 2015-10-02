@@ -41,7 +41,8 @@ SELECT DISTINCT obj2.feature_id as transgene_feature_id, obj2.name as transgene_
    	WHERE rel1.name='associated_with'
    	AND rel2.name='associated_with'
    	AND rel3.name='alleleof'
-	AND obj2.uniquename ~ 'FBtp|FBti';
+	AND obj2.uniquename ~ 'FBtp|FBti'
+	AND obj2.is_obsolete IS FALSE;
 
 ALTER TABLE vfbview_transgene_expressed_gp ADD PRIMARY KEY (gp_feature_id, transgene_feature_id);
 
@@ -61,7 +62,8 @@ SELECT DISTINCT subj.feature_id as gp_feature_id, subj.name as gp_name, stype.na
    	JOIN cvterm rel1 ON (fr1.type_id = rel1.cvterm_id)
    	JOIN feature obj ON (fr1.object_id = obj.feature_id)
    	WHERE rel1.name='associated_with'
-	AND obj.uniquename like 'FBgn%';
+	AND obj.uniquename like 'FBgn%'
+	AND subj.is_obsolete IS FALSE;
 
 ALTER TABLE vfbview_gene_expressed_gp ADD PRIMARY KEY (gp_feature_id, gene_feature_id);  -- Note - expected gp_feature_id to be unique, but oddly it is not. Should probably investigate further
 
