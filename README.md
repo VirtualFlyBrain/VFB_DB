@@ -3,7 +3,7 @@ VFB Local Database Management
 
 To load the latest Flybase version:
 
-Note: This should only be run on main server them replicated to others
+Note: This should only be tested on dev server before being updated to main server.
 
 Ensure you have created a ~/.pgpass file containing:
 ```
